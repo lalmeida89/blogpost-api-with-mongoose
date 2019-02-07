@@ -49,11 +49,49 @@ describe('Blog Posts', function(){
       .post('/blog-posts')
       .send(newPost)
       .then(function(res){
-        console.log(res.body);
         newPost['id'] = res.body.id
         newPost['publishDate'] = res.body.publishDate
         expect(res.body).to.deep.equal(newPost)
         expect(res).to.have.status(201)
+        expect(res).to.be.json;
+        expect(res.body.id).to.not.equal(null)
+        expect(res.body).to.be.an('object')
+      })
+  })
+  it('should throw an error with bad data on POST', function(){
+    const badPostReq = {}
+    return chai.request(app)
+      .post('/blog-posts')
+      .send(badPostReq)
+      .then(function(res){
+        expect(res).to.have.status(400)
+      })
+  })
+  it('should update post on PUT', function(){
+    return chai.request(app)
+      .get('/blog-posts')
+      .then(function(res){
+        const updateData = Object.assign(res.body[0], {
+          title: 'test title',
+          content: 'test content'
+        })
+        return chai.request(app)
+          .put(`/blog-posts/${res.body[0].id}`)
+          .send(updateData)
+          .then(function(res) {
+            expect(res).to.have.status(204)
+          })
+      })
+  })
+  it('should delete post on DELETE', function(){
+    return chai.request(app)
+      .get('/blog-posts')
+      .then(function(res){
+        return chai.request(app)
+          .delete(`/blog-posts/${res.body[0].id}`)
+          .then(function(res){
+            expect(res).to.have.status(204)
+          })
       })
   })
 })
