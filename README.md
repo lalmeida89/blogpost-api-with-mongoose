@@ -1,4 +1,4 @@
-Blog app API starter files
+Blog Posts app with Travis CI and Mongoose
 ==========================
 
-Starter files for blog app challenge
+Solution for blog posts challenge with mongoose

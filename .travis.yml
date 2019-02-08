@@ -1,9 +1,2 @@
 language: node_js
 node_js: node
-deploy:
-  provider: heroku
-  api_key:
-    secure: bxCFgb52NVt0nqdM1IMecC0CL9lEV3mACDV7zjMrycM5uvXPF/XgRJ/GFLpo6b02jwXTQi55WDQ3lhnDibqNxvm8gvQGGMq7ZvvrSHKMja6ONZnOR5wSZxvXxyV6R23lP0org8ATG9PPk9OVv4+yyUVRI8J/dizUFfdZ/ywZNcHbxfzQF85DDILWq5gpDwK838/g4RoN4AoTWCTQal8wPnUiP4e3semB2ra4trIXSF8SMo2gRNePoIJ24klN2xpq1sbeErXEEbFf/8nAMb+u0QFeUvLERqpqXY6EHYe4J27n78+nIlPx0wPTiiSrhcG5i2RYx2jR2XG3IZqyZIwKYH2qJGvRGd/4pvRyyoNhcvGXkF5t4ibjwnNLersC1ArRNNQ38GFLAIFG5jLGkVEcc8eDay+A/gCaj7F5J3g1Vtx1PYB6kmUymjuQfFlVgI/NYd0V+VWFRInuOE9ybVrMYWTpJMA0St7hyOxB96YCzcy99NUSVsiYhUEa1/SsSPFyTp2EHvbjBF4p+B+hSTxDGRaAriuQXFL6OgCnvsRXFrUTQUsvxaZ4Ac1Fq2GJSb/VYD1TBU0OjR3F9liMg/xbDDXsOPwfM5lMnWZ5oGE2OVSm9x1IO0f6eDJVV7PGGQWmTkQiw3eKY+Nu5RfBYr8IBG/y0DxYN5iJw06jhMDm/Io=
-  app: aqueous-beyond-59076
-  on:
-    repo: lalmeida89/travis-ci-blogpost-api
