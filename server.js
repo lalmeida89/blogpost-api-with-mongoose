@@ -11,6 +11,7 @@ const app = express();
 app.use(morgan('common'));
 app.use(express.json());
 
+//get blogposts
 app.get('/blogposts', (req, res) => {
   BlogPost.find()
     .then(blogpost => {
@@ -24,6 +25,7 @@ app.get('/blogposts', (req, res) => {
     })
 });
 
+//get a single blogpost by id
 app.get('/blogposts/:id', (req, res) => {
   BlogPost.findById(req.params.id)
     .then(blogpost => res.json(blogpost.serialize()))
@@ -33,6 +35,7 @@ app.get('/blogposts/:id', (req, res) => {
     })
 })
 
+//post a blogpost
 app.post('/blogposts', (req,res) => {
   const reqFields = ['title', 'author', 'content']
   for (let i = 0; i < reqFields.length; i++) {
@@ -55,67 +58,37 @@ app.post('/blogposts', (req,res) => {
   })
 })
 
-app.post('/blogposts', (req, res) => {
-  const requiredFields = ['title', 'content', 'author'];
-  for (let i = 0; i < requiredFields.length; i++) {
-    const field = requiredFields[i];
-    if (!(field in req.body)) {
-      const message = `Missing \`${field}\` in request body`;
-      console.error(message);
-      return res.status(400).send(message);
-    }
-  }
-  const item = BlogPosts.create(
-    req.body.title,
-    req.body.content,
-    req.body.author
-  );
-  res.status(201).json(item);
-});
-
-// add endpoint for PUT requests to update blogposts. it should
-// call `BlogPosts.update()` and return the updated post.
-// it should also ensure that the id in the object representing
-// the post matches the id of the path variable, and that the
-// following required fields are in request body: `id`, `title`,
-// `content`, `author`, `publishDate`
-
+//update blogpost by id
 app.put('/blogposts/:id', (req, res) => {
-  const requiredFields = ['id', 'title', 'content', 'author', 'publishDate'];
-  for (let i = 0; i < requiredFields.length; i++) {
-    const field = requiredFields[i];
-    if (!(field in req.body)) {
-      const message = `Missing \`${field}\` in request body`;
-      console.error(message);
-      return res.status(400).send(message);
+  console.log(req.body);
+  if (!(req.params.id && req.body.id && req.params.id === req.body.id)){
+    const msg = `Request path id ${req.params.id} and request body id ${req.body.id} must match`
+    console.log(req.body);
+    return res.status(400).json({ error: msg})
+  }
+  const toUpdate = {};
+  const updateableFields = ['title', 'content', 'author'];
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      toUpdate[field] = req.body[field]
     }
-  }
-  if (req.params.id !== req.body.id) {
-    const message = `Request path id (${
-      req.params.id
-    }) and request body id ``(${req.body.id}) must match`;
-    console.error(message);
-    return res.status(400).send(message);
-  }
-  console.log(`Updating blog post with id \`${req.params.id}\``);
-  BlogPosts.update({
-    id: req.params.id,
-    title: req.body.title,
-    content: req.body.content,
-    author: req.body.author,
-    publishDate: req.body.publishDate
-  });
-  res.status(204).end();
+  })
+  BlogPost.findByIdAndUpdate(req.params.id, {$set: toUpdate}, { new: true })
+  .then(post => res.status(204).end())
+  .catch(err => res.status(500).json({message: 'internal sever error'}))
 });
-
-// add endpoint for DELETE requests. These requests should
-// have an id as a URL path variable and call
-// `BlogPosts.delete()`
 
 app.delete('/blogposts/:id', (req, res) => {
-  BlogPosts.delete(req.params.id);
-  console.log(`Deleted blog post with id \`${req.params.id}\``);
-  res.status(204).end();
+  BlogPost.findByIdAndRemove(req.params.id)
+    .then(post => {
+      console.log(`deleted post with id ${req.params.id}`);
+      res.status(204).end()
+    })
+    .catch(err => res.status(500).json({message: 'internal server error'}))
+});
+
+app.use("*", function(req, res) {
+  res.status(404).json({ message: "Not Found" });
 });
 
 let server;
